@@ -1,0 +1,9 @@
+<ion-view view-title="Restaurante">
+  <ion-content>
+    <ion-list>
+      <ion-item ng-repeat="restaurante in restaurantes" href="#/app/resturante/{{restaurante.id}}">
+        {{restaurante.nome}}
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

@@ -60,7 +60,10 @@ angular.module('starter.controllers', [])
          * Se busca for vazia, lista todos
          */
         $scope.$watch('busca.valor', function(){
-            if ($scope.busca.valor.length < 3 && $scope.busca.valor!="") return;
+            if ($scope.busca.valor.length < 3 || $scope.busca.valor=="") {
+                $scope.restaurantes = restaurantes;
+                return;
+            }
             
             var resultadoFiltro = restaurantes.filter(function(e){
                return e.nome.indexOf($scope.busca.valor) > -1;

@@ -55,7 +55,8 @@ angular.module('starter.controllers', [])
     
     /**
      * Pesquisa equivalente ao like do SQL, quando tiver 3 ou mais caracteres.
-     * Se busca for vazia, lista todos
+     * Se busca for vazia, lista todos.
+     * também ignora case.
      */
     $scope.$watch('busca.valor', function(){
         if ($scope.busca.valor.length < 3 || $scope.busca.valor=="") {
@@ -64,7 +65,7 @@ angular.module('starter.controllers', [])
         }
         
         var resultadoFiltro = restaurantes.filter(function(e){
-            return e.nome.indexOf($scope.busca.valor) > -1;
+            return e.nome.toLowerCase().indexOf($scope.busca.valor.toLowerCase()) > -1;
         });
         
         $scope.restaurantes = resultadoFiltro;

@@ -44,35 +44,34 @@ angular.module('starter.controllers', [])
 .controller('RestauranteCtrl', function($scope, $ionicModal, $http) {
     var restaurantes = [];
  
-  
-    $scope.listar = function() {
-        $scope.busca = {valor : ""};
+    $scope.busca = {valor : ""};
+    
+    $http.get('http://127.0.0.1:1337/restaurante').then(function(resp){
+        $scope.restaurantes = resp.data;
+        restaurantes = resp.data;
+    }, function(err){
+        console.error('ERR', err);
+    });
+    
+    /**
+     * Pesquisa equivalente ao like do SQL, quando tiver 3 ou mais caracteres.
+     * Se busca for vazia, lista todos
+     */
+    $scope.$watch('busca.valor', function(){
+        if ($scope.busca.valor.length < 3 || $scope.busca.valor=="") {
+            $scope.restaurantes = restaurantes;
+            return;
+        }
         
-        $http.get('http://127.0.0.1:1337/restaurante').then(function(resp){
-            $scope.restaurantes = resp.data;
-            restaurantes = resp.data;
-        }, function(err){
-            console.error('ERR', err);
+        var resultadoFiltro = restaurantes.filter(function(e){
+            return e.nome.indexOf($scope.busca.valor) > -1;
         });
         
-        /**
-         * Pesquisa equivalente ao like do SQL, quando tiver 3 ou mais caracteres.
-         * Se busca for vazia, lista todos
-         */
-        $scope.$watch('busca.valor', function(){
-            if ($scope.busca.valor.length < 3 || $scope.busca.valor=="") {
-                $scope.restaurantes = restaurantes;
-                return;
-            }
-            
-            var resultadoFiltro = restaurantes.filter(function(e){
-               return e.nome.indexOf($scope.busca.valor) > -1;
-            });
-            
-            $scope.restaurantes = resultadoFiltro;
-        }, true);
-    };
+        $scope.restaurantes = resultadoFiltro;
+    }, true);
     
+    
+    // MODAL
     $ionicModal.fromTemplateUrl('templates/detalheRestaurante.html', {
         scope: $scope
     }).then(function(modal) {

@@ -1,9 +1,23 @@
-<ion-view view-title="Restaurante">
+<ion-view view-title="Restaurante" ng-init="listar()">
   <ion-content>
+     
+    <div class="bar bar-header item-input-inset">
+        <label class="item-input-wrapper">
+            <i class="icon ion-ios-search placeholder-icon"></i>
+            <input type="search" ng-model="busca.valor" placeholder="Filtrar por Nome">
+        </label>
+    </div>
+      
     <ion-list>
-      <ion-item ng-repeat="restaurante in restaurantes" href="#/app/resturante/{{restaurante.id}}">
-        {{restaurante.nome}}
-      </ion-item>
+        <div class="card">
+            <div class="item item-text-wrap" ng-repeat="restaurante in restaurantes" ng-click="mostraRestaurante({{$index}})">
+                <b>{{restaurante.nome}}</b> - {{restaurante.endereco}}
+                </br><b>Cozinha:</b> 
+                <span ng-repeat="categoria in restaurante.categorias">
+                    {{categoria.nome}}    
+                </span>
+            </div>
+        </div>
     </ion-list>
   </ion-content>
 </ion-view>

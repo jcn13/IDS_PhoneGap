@@ -1,4 +1,30 @@
-<ion-view view-title="Detalhe Restaurante">
+<ion-modal-view style="height:70%;">
+  <ion-header-bar>
+    <h1 class="title">{{restaurante.nome}}</h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closeLogin()">Close</button>
+    </div>
+  </ion-header-bar>
   <ion-content>
+      <div class="list">
+        <label class="item item-input">
+          <span class="input-label">Nome: {{restaurante.nome}}</span>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Endereço: {{restaurante.endereco}}</span>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Telefone: {{restaurante.telefone}}</span>
+        </label>
+         <div class="item item-divider">
+            Categoria(s)
+        </div>
+        <ion-list ng-repeat="categoria in restaurante.categorias">
+            <ion-item>{{categoria.nome}}</ion-item>
+        </ion-list>
+        <label class="item">
+          <button class="button button-block button-positive" ng-click="fecharModal()">Fechar</button>
+        </label>
+      </div>
   </ion-content>
-</ion-view>
+</ion-modal-view>

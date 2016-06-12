@@ -41,17 +41,51 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('RestauranteCtrl', function($scope, $http) {
-    $http.get('http://127.0.0.1:1337/restaurante').then(function(resp){
-        $scope.restaurantes = resp.data;
-	}, function(err){
-		console.error('ERR', err);
-	});
+.controller('RestauranteCtrl', function($scope, $ionicModal, $http) {
+    var restaurantes = [];
+ 
+  
+    $scope.listar = function() {
+        $scope.busca = {valor : ""};
+        
+        $http.get('http://127.0.0.1:1337/restaurante').then(function(resp){
+            $scope.restaurantes = resp.data;
+            restaurantes = resp.data;
+        }, function(err){
+            console.error('ERR', err);
+        });
+        
+        /**
+         * Pesquisa equivalente ao like do SQL, quando tiver 3 ou mais caracteres.
+         * Se busca for vazia, lista todos
+         */
+        $scope.$watch('busca.valor', function(){
+            if ($scope.busca.valor.length < 3 && $scope.busca.valor!="") return;
+            
+            var resultadoFiltro = restaurantes.filter(function(e){
+               return e.nome.indexOf($scope.busca.valor) > -1;
+            });
+            
+            $scope.restaurantes = resultadoFiltro;
+        }, true);
+    };
+    
+    $ionicModal.fromTemplateUrl('templates/detalheRestaurante.html', {
+        scope: $scope
+    }).then(function(modal) {
+        $scope.modal = modal;
+    });
+    
+    $scope.mostraRestaurante = function(idx) {
+        console.log(restaurantes[idx])
+        $scope.restaurante = restaurantes[idx];
+        $scope.modal.show();
+    };
+    
+    $scope.fecharModal = function() {
+        $scope.modal.hide();
+    };
 })
-
-.controller('PlaylistCtrl', function($scope, $stateParams) {
-})
-
 
 .controller('CategoriaCtrl', function($scope, $stateParams, $http) {
     $http.get('http://127.0.0.1:1337/categoria').then(function(resp){

@@ -22,6 +22,62 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   });
 })
 
+
+.factory('restauranteFactory', function($http) {
+    var self = {};
+    self.restaurantes = [];
+    
+    self.listarRestaurante = function(cb) {
+        $http.get('http://127.0.0.1:1337/restaurante').then(function(resp){
+            self.restaurantes = resp.data;
+            cb(self.restaurantes);
+        }, function(err){
+            console.error('ERR', err);
+        });
+    };
+    
+    self.filtrar = function(campo, valor, cb) { 
+        var resultado = self.restaurantes.filter(function(e){
+            return e[campo].toLowerCase().indexOf(valor.toLowerCase()) > -1;
+        });
+        cb(resultado);
+    };
+    
+    self.getGeyById = function(id, cb) {
+        // Filtra pelo id e pega o primeiro elemento
+        cb(self.restaurantes.filter(function(e){
+            return e['id'] == id;
+        })[0]);
+    };
+    
+    self.getLista = function() {
+        return self.restaurantes;
+    };
+    
+	return self;
+})
+
+
+.factory('categoriaFactory', function($http) {
+    var self = {};
+    self.categorias = [];
+    
+    self.listarCategoria = function(cb) {
+        $http.get('http://127.0.0.1:1337/categoria').then(function(resp){
+            self.categorias = resp.data;
+            cb(self.categorias);
+        }, function(err){
+            console.error('ERR', err);
+        });
+    };
+    
+    self.getLista = function() {
+        return self.categorias;
+    };
+    
+    return self;
+})
+
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
 

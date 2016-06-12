@@ -10,7 +10,7 @@
       
     <ion-list>
         <div class="card">
-            <div class="item item-text-wrap" ng-repeat="restaurante in restaurantes" ng-click="mostraRestaurante({{$index}})">
+            <div class="item item-text-wrap" ng-repeat="restaurante in restaurantes" ng-click="mostraRestaurante({{restaurante.id}})">
                 <b>{{restaurante.nome}}</b> - {{restaurante.endereco}}
                 </br><b>Cozinha:</b> 
                 <span ng-repeat="categoria in restaurante.categorias">

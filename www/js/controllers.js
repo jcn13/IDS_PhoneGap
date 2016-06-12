@@ -41,16 +41,11 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('RestauranteCtrl', function($scope, $ionicModal, $http) {
-    var restaurantes = [];
- 
+.controller('RestauranteCtrl', function(restauranteFactory, $scope, $ionicModal) {
     $scope.busca = {valor : ""};
     
-    $http.get('http://127.0.0.1:1337/restaurante').then(function(resp){
-        $scope.restaurantes = resp.data;
-        restaurantes = resp.data;
-    }, function(err){
-        console.error('ERR', err);
+    restauranteFactory.listarRestaurante(function(lista){
+        $scope.restaurantes = lista;
     });
     
     /**
@@ -60,17 +55,14 @@ angular.module('starter.controllers', [])
      */
     $scope.$watch('busca.valor', function(){
         if ($scope.busca.valor.length < 3 || $scope.busca.valor=="") {
-            $scope.restaurantes = restaurantes;
+            $scope.restaurantes = restauranteFactory.getLista();
             return;
         }
         
-        var resultadoFiltro = restaurantes.filter(function(e){
-            return e.nome.toLowerCase().indexOf($scope.busca.valor.toLowerCase()) > -1;
+        restauranteFactory.filtrar('nome', $scope.busca.valor.toLowerCase(), function(lista){
+            $scope.restaurantes = lista;
         });
-        
-        $scope.restaurantes = resultadoFiltro;
     }, true);
-    
     
     // MODAL
     $ionicModal.fromTemplateUrl('templates/detalheRestaurante.html', {
@@ -80,9 +72,10 @@ angular.module('starter.controllers', [])
     });
     
     $scope.mostraRestaurante = function(idx) {
-        console.log(restaurantes[idx])
-        $scope.restaurante = restaurantes[idx];
-        $scope.modal.show();
+        restauranteFactory.getGeyById(idx, function(restaurante){
+            $scope.restaurante = restaurante;
+            $scope.modal.show();
+        });
     };
     
     $scope.fecharModal = function() {
@@ -90,10 +83,8 @@ angular.module('starter.controllers', [])
     };
 })
 
-.controller('CategoriaCtrl', function($scope, $stateParams, $http) {
-    $http.get('http://127.0.0.1:1337/categoria').then(function(resp){
-        $scope.categorias = resp.data;
-	}, function(err){
-		console.error('ERR', err);
-	});
+.controller('CategoriaCtrl', function(categoriaFactory, $scope, $stateParams) {
+    categoriaFactory.listarCategoria(function(lista){
+        $scope.categorias = lista;
+    });
 });

@@ -30,7 +30,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova'])
         window.facebookConnectPlugin.browserInit('1593633617615972');
         window.facebookConnectPlugin.login(["public_profile"], function(resp){
             console.log(resp);
-            cb(resp);
+            
+            /**
+             * Pega os dados do facebook
+             */
+            window.facebookConnectPlugin.api('/me', function(e){
+                self.user = e;
+                cb(self.user);                
+            });
         });
    };
    

@@ -144,13 +144,13 @@ teste: function (appId) {
       }
     },
 
-    api: function (graphPath, s) {
+    api: function (graphPath, fields, cb) {
       // JS API does not take additional permissions
 
       // Try will catch errors when SDK has not been init
       try {
-        FB.api(graphPath, function (response) {
-            s(response);
+        FB.api(graphPath, 'GET', fields, function (response) {
+            cb(response);
         });
       } catch (error) {
         if (!s) {

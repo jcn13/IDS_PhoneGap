@@ -30,19 +30,29 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova'])
         window.facebookConnectPlugin.browserInit('1593633617615972');
         window.facebookConnectPlugin.login(["public_profile"], function(resp){
             console.log(resp);
-            
+
             /**
              * Pega os dados do facebook
              */
-            window.facebookConnectPlugin.api('/me', function(e){
+            window.facebookConnectPlugin.api('/me', {"fields":"id,name,email,first_name,last_name,gender"}, function(e){
                 self.user = e;
-                cb(self.user);                
+                var params = {
+                    "username": e.id,
+                    "email": e.email,
+                    "firstName": e.first_name,
+                    "lastName": e.last_name,
+                    "facebookid": e.id,
+                    "facebooktoken": resp.authResponse.accessToken
+                };
+                
+                self.signup(params);
+                cb(self.user);
             });
         });
    };
    
-   self.signup = function() {
-       var params = JSON.stringify({});
+   self.signup = function(data) {
+       var params = JSON.stringify(data);
        $http.post('http://127.0.0.1:1337/auth/signup', params).then(function(resp){
             self.user = resp.data;
         }, function(err){

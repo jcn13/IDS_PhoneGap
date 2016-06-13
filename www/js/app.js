@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers'])
+angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -22,6 +22,43 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   });
 })
 
+.factory('loginFactory', function($http) {
+   var self = {};
+   self.user = {};
+   
+   self.loginFB = function(cb) {
+        window.facebookConnectPlugin.browserInit('1593633617615972');
+        window.facebookConnectPlugin.login(["public_profile"], function(resp){
+            console.log(resp);
+            cb(resp);
+        });
+   };
+   
+   self.signup = function() {
+       var params = JSON.stringify({});
+       $http.post('http://127.0.0.1:1337/auth/signup', params).then(function(resp){
+            self.user = resp.data;
+        }, function(err){
+            console.error('ERR', err);
+        });
+   };
+   
+   self.login = function(user, pass, cb) {
+       var params = JSON.stringify({
+            "password": user,
+            "email": pass
+       });
+        
+       $http.post('http://127.0.0.1:1337/auth/signin', params).then(function(resp){
+            self.user = resp.data;
+            cb(self.user);
+        }, function(err){
+            console.error('ERR', err);
+        });
+   };
+   
+   return self; 
+})
 
 .factory('restauranteFactory', function($http) {
     var self = {};

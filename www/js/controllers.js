@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
+.controller('AppCtrl', function($scope, $ionicPopup, $ionicModal, $timeout, loginFactory) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -11,7 +11,8 @@ angular.module('starter.controllers', [])
 
   // Form data for the login modal
   $scope.loginData = {};
-
+  $scope.logado = false;
+  
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
     scope: $scope
@@ -30,8 +31,28 @@ angular.module('starter.controllers', [])
   };
 
   // Perform the login action when the user submits the login form
-  $scope.doLogin = function() {
+  $scope.doLogin = function(t) {
     console.log('Doing login', $scope.loginData);
+
+    if (t) {
+        if (t=="fb") loginFactory.loginFB(function(e){
+            $scope.loginData = e;
+            $scope.logado = true;
+        });
+    } else {
+        if (!$scope.loginData.username || !$scope.loginData.password) {
+            $ionicPopup.alert({
+                title: 'Atenção',
+                template: 'Preencher corretamente usuário e/ou senha'
+            });
+            return;
+        }
+        
+        loginFactory.login($scope.loginData.username, $scope.loginData.password, function(e){
+            $scope.loginData = e;
+            $scope.logado = true;
+        });
+    }
 
     // Simulate a login delay. Remove this and replace with your login
     // code if using a login system
@@ -41,7 +62,7 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('RestauranteCtrl', function(restauranteFactory, $scope, $ionicModal) {
+.controller('RestauranteCtrl', function(restauranteFactory, loginFactory, $ionicPopup, $scope, $ionicModal, $cordovaFacebook) {
     $scope.busca = {valor : ""};
     
     restauranteFactory.listarRestaurante(function(lista){
@@ -72,6 +93,13 @@ angular.module('starter.controllers', [])
     });
     
     $scope.mostraRestaurante = function(idx) {
+        if (!$scope.logado) {
+            $ionicPopup.alert({
+                title: 'Atenção',
+                template: 'Favor efetuar o Login'
+            });
+            return;
+        };
         restauranteFactory.getGeyById(idx, function(restaurante){
             $scope.restaurante = restaurante;
             $scope.modal.show();
